@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Habitat Management - LivestockPro</title>
+    <meta name="description" content="Professional habitat management tool for optimal animal welfare and productivity.">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Heroicons -->
+    <script src="https://cdn.jsdelivr.net/npm/heroicons@2.0.18/24/outline/index.min.js"></script>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#10b981',
+                        secondary: '#064e3b',
+                        accent: '#84cc16',
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        heading: ['Poppins', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #f8fafc; }
+        h1, h2, h3, h4 { font-family: 'Poppins', sans-serif; }
+        
+        /* Mobile menu */
+        #mobileMenu {
+            display: none;
+            transition: all 0.3s ease;
+        }
+        #mobileMenu.active {
+            display: block;
+        }
+        
+        /* Reduced image sizes */
+        .habitat-large {
+            height: 460px;
+            object-fit: cover;
+            border-radius: 1.5rem;
+            box-shadow: 0 20px 40px -12px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s ease;
+        }
+        .habitat-large:hover {
+            transform: scale(1.02);
+        }
+        .habitat-small {
+            height: 240px;
+            object-fit: cover;
+            border-radius: 1rem;
+            box-shadow: 0 8px 20px -5px rgba(0, 0, 0, 0.08);
+            transition: transform 0.3s ease;
+        }
+        .habitat-small:hover {
+            transform: scale(1.05);
+        }
+        
+        /* Glassmorphism */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+        }
+        
+        /* Hero pattern */
+        .hero-pattern {
+            background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2zM30 0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2zM34 4v4h2v-4h4V2h-4V0h-2z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+        }
+
+        /* Professional Spinner Enhancements */
+        .animation-delay-75 {
+            animation-delay: 0.75s;
+        }
+        .delay-100 {
+            animation-delay: 0.1s;
+        }
+        .delay-200 {
+            animation-delay: 0.2s;
+        }
+
+        /* Smooth fade for overlay */
+        #loadingOverlay {
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+        #loadingOverlay.show {
+            opacity: 1;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-900">
+
+    <!-- Navbar -->
+    <nav class="fixed top-0 left-0 right-0 bg-white/95 backdrop-blur-md shadow-md z-50 border-b border-gray-100">
+        <div class="container mx-auto px-4 py-3">
+            <div class="flex items-center justify-between">
+                <a href="/New_home" class="text-3xl font-bold text-primary font-heading">LivestockPro</a>
+                
+                <div class="hidden md:flex items-center gap-8">
+                    <a href="/New_home#features" class="text-gray-700 hover:text-primary font-medium transition">Features</a>
+                    <a href="/New_home#how-it-works" class="text-gray-700 hover:text-primary font-medium transition">How It Works</a>
+                    <a href="/New_home#events" class="text-gray-700 hover:text-primary font-medium transition">Events</a>
+                    <a href="/New_home#cta" class="bg-primary text-white px-7 py-2.5 rounded-xl font-semibold hover:bg-primary/90 shadow-md transition">Get Started</a>
+                </div>
+                
+                <button onclick="toggleMobileMenu()" class="md:hidden text-gray-700">
+                    <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                    </svg>
+                </button>
+            </div>
+            
+            <div id="mobileMenu" class="mt-5 pb-5 border-t border-primary/20 pt-5">
+                <div class="flex flex-col gap-4">
+                    <a href="/New_home#features" class="text-gray-700 hover:text-primary text-lg font-medium transition">Features</a>
+                    <a href="/New_home#how-it-works" class="text-gray-700 hover:text-primary text-lg font-medium transition">How It Works</a>
+                    <a href="/New_home#events" class="text-gray-700 hover:text-primary text-lg font-medium transition">Events</a>
+                    <a href="/New_home#cta" class="bg-primary text-white px-8 py-3 rounded-xl font-bold text-lg text-center hover:bg-primary/90 transition shadow-md">Get Started</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="relative pt-28 pb-16 bg-gradient-to-br from-primary to-secondary text-white hero-pattern overflow-hidden">
+        <div class="absolute inset-0 bg-black/10"></div>
+        <div class="container mx-auto px-4 text-center relative z-10">
+            <h1 class="text-5xl md:text-6xl font-extrabold mb-5 leading-tight">
+                Habitat Management
+            </h1>
+            <p class="text-lg md:text-2xl max-w-4xl mx-auto opacity-95 font-light">
+                Create the perfect living environment for healthier, happier, and more productive animals.
+            </p>
+        </div>
+    </section>
+
+    <!-- Main Content -->
+    <main class="container mx-auto px-4 py-16">
+        <div class="max-w-7xl mx-auto relative">
+            <!-- Search Card -->
+            <div class="glass-card rounded-3xl shadow-xl p-8 mb-14 border border-white/20">
+                <div class="flex items-center gap-4 mb-6">
+                    <div class="bg-primary/10 p-3 rounded-xl">
+                        <svg class="w-9 h-9 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
+                        </svg>
+                    </div>
+                    <h2 class="text-3xl font-bold text-primary">Search Animal Habitat</h2>
+                </div>
+                <div class="flex flex-col lg:flex-row gap-5">
+                    <input type="text" id="animalSearch" placeholder="e.g. Holstein Cow, Lion, Goat, Panda..." 
+                           class="flex-1 px-7 py-4 text-lg border-2 border-gray-200 rounded-2xl focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/20 transition">
+                    <button onclick="searchHabitat()" class="bg-primary text-white px-10 py-4 rounded-2xl font-bold text-lg hover:bg-primary/90 transition shadow-lg">
+                        Search Habitat
+                    </button>
+                </div>
+            </div>
+
+            <!-- Professional Loading Overlay -->
+            <div id="loadingOverlay" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-md">
+                <div class="bg-white rounded-3xl shadow-2xl p-10 max-w-sm w-full mx-4 text-center">
+                    <div class="relative inline-block">
+                        <!-- Dual Ring Spinner -->
+                        <div class="w-20 h-20 border-4 border-gray-200 rounded-full animate-spin border-t-primary"></div>
+                        <div class="absolute inset-0 w-20 h-20 border-4 border-transparent rounded-full animate-spin border-t-accent animation-delay-75"></div>
+                    </div>
+                    <h3 class="mt-8 text-2xl font-bold text-primary">LivestockPro</h3>
+                    <p class="mt-3 text-lg text-gray-700">Discovering optimal habitat...</p>
+                    <div class="mt-6 flex justify-center space-x-2">
+                        <div class="w-3 h-3 bg-primary rounded-full animate-bounce"></div>
+                        <div class="w-3 h-3 bg-primary rounded-full animate-bounce delay-100"></div>
+                        <div class="w-3 h-3 bg-primary rounded-full animate-bounce delay-200"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Results -->
+            <div id="results" class="hidden">
+                <div class="grid lg:grid-cols-2 gap-12 items-start">
+                    <!-- Left: Images -->
+                    <div class="space-y-8">
+                        <div class="group">
+                            <h3 class="text-2xl font-bold mb-4 text-primary">Primary Habitat</h3>
+                            <div class="overflow-hidden rounded-2xl">
+                                <img id="habitatImage1" src="" alt="Primary habitat" class="w-full habitat-large group-hover:scale-105 transition-transform duration-500">
+                            </div>
+                            <p class="text-center text-gray-500 mt-3 text-sm">Primary environment • Powered by Unsplash</p>
+                        </div>
+
+                        <div>
+                            <h3 class="text-2xl font-bold mb-5 text-primary">Alternative Environments</h3>
+                            <div class="grid grid-cols-2 gap-6">
+                                <div class="group">
+                                    <div class="overflow-hidden rounded-xl">
+                                        <img id="habitatImage2" src="" alt="Alternative 1" class="w-full habitat-small group-hover:scale-110 transition-transform duration-500">
+                                    </div>
+                                    <p class="text-center text-gray-500 mt-2 text-sm">Alternative setup</p>
+                                </div>
+                                <div class="group">
+                                    <div class="overflow-hidden rounded-xl">
+                                        <img id="habitatImage3" src="" alt="Alternative 2" class="w-full habitat-small group-hover:scale-110 transition-transform duration-500">
+                                    </div>
+                                    <p class="text-center text-gray-500 mt-2 text-sm">Another variation</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Right: Info -->
+                    <div class="space-y-8">
+                        <h3 class="text-3xl font-bold text-primary" id="animalTitle">Habitat Details</h3>
+                        
+                        <div class="bg-gradient-to-r from-green-50 to-emerald-50 p-6 rounded-2xl border border-green-200">
+                            <div class="flex items-center gap-3 mb-3">
+                                <svg class="w-7 h-7 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
+                                </svg>
+                                <h4 class="text-xl font-bold">Description</h4>
+                            </div>
+                            <p id="description" class="text-gray-800 text-base leading-relaxed"></p>
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-6">
+                            <div class="bg-gradient-to-br from-blue-50 to-cyan-50 p-5 rounded-2xl border border-blue-200">
+                                <div class="flex items-center gap-3 mb-2">
+                                    <svg class="w-6 h-6 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
+                                    </svg>
+                                    <h4 class="font-bold text-base">Space Requirements</h4>
+                                </div>
+                                <p id="space" class="text-gray-800"></p>
+                            </div>
+
+                            <div class="bg-gradient-to-br from-blue-50 to-cyan-50 p-5 rounded-2xl border border-blue-200">
+                                <div class="flex items-center gap-3 mb-2">
+                                    <svg class="w-6 h-6 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+                                    </svg>
+                                    <h4 class="font-bold text-base">Temperature</h4>
+                                </div>
+                                <p id="temp" class="text-gray-800"></p>
+                            </div>
+
+                            <div class="bg-gradient-to-br from-blue-50 to-cyan-50 p-5 rounded-2xl border border-blue-200">
+                                <div class="flex items-center gap-3 mb-2">
+                                    <svg class="w-6 h-6 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                                    </svg>
+                                    <h4 class="font-bold text-base">Humidity</h4>
+                                </div>
+                                <p id="humidity" class="text-gray-800"></p>
+                            </div>
+
+                            <div class="bg-gradient-to-br from-blue-50 to-cyan-50 p-5 rounded-2xl border border-blue-200">
+                                <div class="flex items-center gap-3 mb-2">
+                                    <svg class="w-6 h-6 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path>
+                                    </svg>
+                                    <h4 class="font-bold text-base">Lighting</h4>
+                                </div>
+                                <p id="lighting" class="text-gray-800"></p>
+                            </div>
+                        </div>
+
+                        <!-- Enrichment & Care Tips - Expandable -->
+                        <div class="bg-gradient-to-r from-amber-50 to-orange-50 rounded-2xl border border-amber-200 overflow-hidden">
+                            <button onclick="toggleDropdown('enrichmentDropdown')" class="w-full text-left p-6 flex items-center justify-between hover:bg-amber-100/50 transition">
+                                <div class="flex items-center gap-4">
+                                    <svg class="w-8 h-8 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                    </svg>
+                                    <h4 class="text-xl font-bold">Enrichment & Care Tips</h4>
+                                </div>
+                                <svg id="enrichmentChevron" class="w-6 h-6 text-accent transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                                </svg>
+                            </button>
+                            <div id="enrichmentDropdown" class="px-6 pb-6 max-h-0 overflow-hidden transition-all duration-500">
+                                <p id="tips" class="text-gray-800 text-base leading-relaxed mb-4"></p>
+                                <div class="bg-white/70 p-5 rounded-xl border border-amber-200">
+                                    <h5 class="font-bold text-amber-800 mb-3">Additional Enrichment Ideas</h5>
+                                    <ul class="list-disc list-inside text-gray-700 space-y-2 text-base">
+                                        <li>Rotate toys weekly to maintain interest</li>
+                                        <li>Use food puzzles or scattered feeding to encourage natural foraging</li>
+                                        <li>Provide safe climbing structures made from natural wood</li>
+                                        <li>Include dust bathing areas with fine sand or soil</li>
+                                        <li>Introduce scent enrichment (herbs, safe animal scents) occasionally</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Daily Care Advice - Expandable -->
+                        <div class="bg-gradient-to-r from-purple-50 to-pink-50 rounded-2xl border border-purple-200 overflow-hidden mt-8">
+                            <button onclick="toggleDropdown('careDropdown')" class="w-full text-left p-6 flex items-center justify-between hover:bg-purple-100/50 transition">
+                                <div class="flex items-center gap-4">
+                                    <svg class="w-8 h-8 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                    </svg>
+                                    <h4 class="text-xl font-bold">Daily Care Advice</h4>
+                                </div>
+                                <svg id="careChevron" class="w-6 h-6 text-primary transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                                </svg>
+                            </button>
+                            <div id="careDropdown" class="px-6 pb-6 max-h-0 overflow-hidden transition-all duration-500">
+                                <p id="care" class="text-gray-800 text-base leading-relaxed mb-4"></p>
+                                <div class="bg-white/70 p-5 rounded-xl border border-purple-200">
+                                    <h5 class="font-bold text-purple-800 mb-3">Maintenance & Health Guidelines</h5>
+                                    <ul class="list-disc list-inside text-gray-700 space-y-2 text-base">
+                                        <li>Daily spot cleaning of waste and soiled bedding</li>
+                                        <li>Weekly full shelter disinfection with animal-safe cleaners</li>
+                                        <li>Regular hoof trimming every 6-8 weeks</li>
+                                        <li>Monitor for parasites and treat promptly</li>
+                                        <li>Ensure constant access to clean water and mineral blocks</li>
+                                        <li>Check fencing and structures for damage daily</li>
+                                        <li>Adjust shelter ventilation based on weather conditions</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Seasonal Variations -->
+                        <div class="bg-gradient-to-r from-indigo-50 to-blue-50 p-6 rounded-2xl border border-indigo-200 mt-8">
+                            <div class="flex items-center gap-3 mb-3">
+                                <svg class="w-8 h-8 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                </svg>
+                                <h4 class="text-xl font-bold">Seasonal Variations</h4>
+                            </div>
+                            <p id="seasonal" class="text-gray-800 text-base leading-relaxed">
+                                No seasonal notes available.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Coming Soon -->
+            <div id="comingSoon" class="hidden text-center py-24">
+                <div class="max-w-3xl mx-auto">
+                    <h3 class="text-4xl font-bold text-gray-700 mb-6">Coming Soon</h3>
+                    <p class="text-xl text-gray-600 mb-10">
+                        We're working hard to add comprehensive habitat information for this animal.
+                    </p>
+                    <img id="fallbackImage" src="" alt="General habitat" class="w-full rounded-3xl shadow-xl habitat-large mx-auto">
+                    <p class="text-gray-500 mt-5 text-base">General habitat visualization • Powered by Unsplash</p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-secondary text-white py-12">
+        <div class="container mx-auto px-4 text-center">
+            <p class="text-lg">&copy; 2025 LivestockPro. All rights reserved.</p>
+            <p class="mt-3 text-gray-300">Professional habitat management for modern animal care.</p>
+        </div>
+    </footer>
+
+    <script>
+        const UNSPLASH_ACCESS_KEY = "fgjBJ-DOkCkpuZfPCR1keuRSNQTZHVUi_AZsdgn5AEs";
+
+        async function searchHabitat() {
+            const animal = document.getElementById('animalSearch').value.trim();
+            if (!animal) {
+                alert("Please enter an animal name");
+                return;
+            }
+
+            // Show professional loading overlay
+            const overlay = document.getElementById('loadingOverlay');
+            overlay.classList.remove('hidden');
+            setTimeout(() => overlay.classList.add('show'), 10); // Trigger fade
+
+            document.getElementById('animalTitle').textContent = `${animal} Habitat`;
+            document.getElementById('results').classList.add('hidden');
+            document.getElementById('comingSoon').classList.add('hidden');
+
+            try {
+                const habitatRes = await fetch(`/api/habitat-plan?animal=${encodeURIComponent(animal)}`);
+                const habitatData = await habitatRes.json();
+
+                // Populate seasonal variations
+                document.getElementById('seasonal').textContent = 
+                    habitatData.seasonal_variations || "No specific seasonal variations noted.";
+
+                const query = encodeURIComponent(habitatData.unsplash_query || `${animal} habitat enclosure farm zoo nature`);
+                const unsplashUrl = `https://api.unsplash.com/search/photos?query=${query}&per_page=3&orientation=landscape&client_id=${UNSPLASH_ACCESS_KEY}`;
+                const imageRes = await fetch(unsplashUrl);
+                const imageJson = await imageRes.json();
+
+                let images = [
+                    "https://source.unsplash.com/featured/?animal,habitat",
+                    "https://source.unsplash.com/featured/?nature,enclosure",
+                    "https://source.unsplash.com/featured/?farm,habitat"
+                ];
+
+                if (imageJson.results && imageJson.results.length > 0) {
+                    images = imageJson.results.map(r => r.urls.regular);
+                }
+
+                document.getElementById('habitatImage1').src = images[0];
+                document.getElementById('habitatImage2').src = images[1] || images[0];
+                document.getElementById('habitatImage3').src = images[2] || images[0];
+                document.getElementById('fallbackImage').src = images[0];
+
+                if (habitatData.habitat_description && habitatData.habitat_description !== "Coming Soon") {
+                    document.getElementById('description').textContent = habitatData.habitat_description;
+                    document.getElementById('space').textContent = habitatData.space_requirements || "Not specified";
+                    document.getElementById('temp').textContent = habitatData.temperature_range || "Not specified";
+                    document.getElementById('humidity').textContent = habitatData.humidity_range || "Not specified";
+                    document.getElementById('lighting').textContent = habitatData.lighting || "Not specified";
+                    document.getElementById('tips').textContent = habitatData.enrichment_tips || "Provide natural environment and stimulation";
+                    document.getElementById('care').textContent = habitatData.care_advice || "Regular cleaning and monitoring recommended";
+                    document.getElementById('results').classList.remove('hidden');
+                } else {
+                    document.getElementById('comingSoon').classList.remove('hidden');
+                }
+
+            } catch (error) {
+                console.error("Error:", error);
+                document.getElementById('seasonal').textContent = "Error loading data.";
+                document.getElementById('comingSoon').classList.remove('hidden');
+                document.getElementById('fallbackImage').src = "https://source.unsplash.com/featured/?habitat,nature";
+            } finally {
+                // Hide loading overlay with fade
+                overlay.classList.remove('show');
+                setTimeout(() => overlay.classList.add('hidden'), 400);
+            }
+        }
+
+        function toggleMobileMenu() {
+            document.getElementById('mobileMenu').classList.toggle('active');
+        }
+
+        function toggleDropdown(id) {
+            const dropdown = document.getElementById(id);
+            const chevron = document.getElementById(id.replace('Dropdown', 'Chevron'));
+            
+            if (dropdown.classList.contains('max-h-0')) {
+                dropdown.classList.remove('max-h-0');
+                dropdown.classList.add('max-h-96');
+                chevron.classList.add('rotate-180');
+            } else {
+                dropdown.classList.add('max-h-0');
+                dropdown.classList.remove('max-h-96');
+                chevron.classList.remove('rotate-180');
+            }
+        }
+    </script>
+</body>
+</html>
+
+
+
+
